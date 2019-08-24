@@ -40,11 +40,58 @@ __status__ = "Prototype"
 
 # PROGRAM START
 
-input_file = open('nearly.json', 'r')
-output_file = open('almost.json', 'w')
+logo = """\
+                           8               
+                           8               
+.oPYo. .oPYo. oPYo. .oPYo. 8 .oPYo. o    o 
+8    8 .oooo8 8  `' Yb..   8 8oooo8 8    8 
+8    8 8    8 8       'Yb. 8 8.     8    8 
+8YooP' `YooP8 8     `YooP' 8 `Yooo' `YooP8 
+8 ....::.....:..:::::.....:..:.....::....8 
+8 ::::::::::::::::::::::::::::::::::::ooP'.
+..::::::::::::::::::::::::::::::::::::...::
+"""
 
-find_word = [line.rstrip('\n') for line in open("field_find", 'r')]
-replace_word = [line.rstrip('\n') for line in open("field_update", 'r')]
+print logo
+print __version__ + " | " + __email__
+print "_" * 58 + "\n"
+
+
+def filecheck(filename):
+    """
+    This function checks to see if the file exists.
+    
+    :param filename: 
+    :return: 
+    """
+    try:
+        open(filename, 'r')
+        return 1
+    except IOError:
+        print "Error: A required file does not exist.\n" \
+              "- field_find.txt (required)\n" \
+              "- field_update.txt (required)\n" \
+              "- your entered JSON file (required)\n\n" \
+              "Please check your files and try again."
+        exit()
+
+# Check if required array files exist, if not, exit immediately.
+# The program requires these files to run properly.
+filecheck("field_find.txt")
+filecheck("field_update.txt")
+
+# Get input and output file names from user
+input_file = raw_input("Enter the ZEEK/BRO JSON file to parse: ")
+filecheck(input_file)
+output_file = raw_input("Enter the output file: ")
+
+# Open files
+input_file = open(input_file, 'r')
+output_file = open(output_file, 'w')
+
+# Parse array of terms into a list to be searched for and updated
+find_word = [line.rstrip('\n') for line in open("field_find.txt", 'r')]
+replace_word = [line.rstrip('\n') for line in open("field_update.txt", 'r')]
 
 print("Data and word list files opened, processing data...")
 
