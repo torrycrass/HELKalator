@@ -17,3 +17,5 @@ to the following License:
 3. Increase the version numbers in any examples files and the README.md to the new version that this
    Pull Request would represent. The versioning scheme we use DAYMONYEAR.MAJOR.MINOR
 4. You may merge the Pull Request in once you have the sign-off from existing maintainers.
+
+**NOTE:** Currently contributions on github will need to be manually imported to the project source in a local gitlab repository. I aim to resolve this eventually but it is not as important as getting the code and guidance put together so is a lower priority.
