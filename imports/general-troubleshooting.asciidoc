@@ -1,0 +1,28 @@
+= General Troubleshooting
+
+== Overview
+This document contains a list of errors encountered on imports and their possible solutions. These may be sourced/copied from other areas on the internet in attempt to aggregate them here as they pertain to the effort of importing data into a HELK or ELK stack.
+
+=== Table of Contents
+- Problem Template
+- Error: yaml found character that cannot start any token
+
+
+==== Problem Template
+Error should be present in title or if too long paraphrased with the error listed immediately below the title.
+
+**Last Updated:** DATE
+
+**Solution:** The solution to the problem.
+
+**Source:** A link to any source material for reference and credit.
+
+
+===== Error: yaml found character that cannot start any token
+**Last Updated:** 24 AUG 2019
+
+**Solution:**
+moraes commented on Jun 3, 2013
+Check if you are using tabs for indentation. YAML doesn't allow tabs; it requires spaces.
+
+**Source:**  https://github.com/moraes/config/issues/1

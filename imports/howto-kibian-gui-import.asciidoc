@@ -1,0 +1,66 @@
+= Using the Kibana GUI to Import Data
+
+== Overview
+In the latest version of ELK/HELK a GUI (in beta) has been included to allow the upload of up to 100MB increments of log files. This is brief tutorial of the use of that import option.
+
+==== TODO
+- [ ] Update images in howto to be more visually friendly
+
+==== NOTES
+
+IMPORTANT: Only 100MB or smaller are allowed.
+
+IMPORTANT: Your data must be properly formatted already to use this. Garbage in will likely result in either failure, errors, or in a best case, garbage in your data (_yes I did say best case_).
+
+==== PROCESS
+
+===== Step 1
+First, when you log into your HELK instance you will want to navigate to the main set of configuration options. This can be accessed by clicking the top left corner. Once there, locate the "__**Upload data from log file**__" area.
+
+As you can see in the notes it accepts a variety of formats. Currently, I have been working with JSON / NDJSON data so this information is based on that type of a data import. However, the concept is the same for other data types.
+
+image::images\howto-kibian-gui-import-02117.png[]
+
+===== Step 2
+
+After clicking the link you should be in the area to start parsing and uploading the file. You will now want to either click-to-browse-to or drag-and-drop your file into the upload area.
+
+image::images\howto-kibian-gui-import-f0886.png[]
+
+===== Step 3
+
+Once the file is chosen, a sample set of 1,000 lines will be taken to review the data set for both content as well as any problems that might exist in the data. After it finishes "_Analyzing_" your data and assuming everything goes well, you will see a screen similar to that below.
+
+image::images\howto-kibian-gui-import-c5ca6.png[]
+
+===== Step 4
+
+As highlighted above, the __**Time field**__ is by far the most important piece to validate if your data (_at the top_) appears to be correct. This time field will be the timestamp of the event and allow you to work with timelines of events. If it is not set correctly, there is a good chance you'll have trouble doing meaningful data analysis.
+
+If the field listed (in this case **_write_ts**) is not correct, you can choose to update that field by selecting __**Override settings**__ and selecting a new field to associate with the Time field.
+
+Once you are satisfied click the __**Import**__ button as seen below.
+
+image::images\howto-kibian-gui-import-7c5ba.png[]
+
+===== Step 5
+
+Now you will need to address the creation of an index and index pattern. Name it whatever you believe is appropriate. You can also set up the index pattern here, I have done this with the first file upload in a data set, but not subsequent uploads (_I don't know if this is the right way_). I have not worked with the _Advanced_ area at this time so have no guidance there.
+
+CAUTION: With this GUI you will have to create a new index for EACH upload so if you have split log files (like I have) you will need to figure out how to manage that. I'll try to provide suggestions once/if I figure out how to address this better. -- hopefully the creators can be more clear about the best process for uploading multiple 100MB files that are from the same data set. "Force Merge" may be a place to start researching.
+
+image::images\howto-kibian-gui-import-f6813.png[]
+
+===== Step 6
+
+Once you are happy with the text click on the import button as shown above (_again_) and the data should now start to process and upload into your HELK stack. If everything goes well, it will tell you that the process was successful. If it fails, it should give you an error.
+
+IMPORTANT: While I have received errors in most cases of problem uploads, I have also encountered a few situations where everything _looks_ okay and I start the upload process only to have the screen hung with no error and no activity hours later. I do not have a cause or a solution for this other than to say that when this has happened I worked to explore other options.
+
+You should see a processing graphic like below.
+
+image::images\howto-kibian-gui-import-71ab0.png[]
+
+===== Conclusion
+
+This is a great way to get a small log file ingested into the HELK stack. However, I have only had about an 80% success rate and mostly for smaller files. If development continues it looks like this solution could be a great option in the future for data imports. Today, it works for some files if you're in a pinch.
