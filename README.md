@@ -5,11 +5,11 @@
 
 # HELKalator
 
-This project (HELKalator = [HELK + escalator]) contains a collection of scripts put together with the intent to make importing files into the HELK (and likely ELK) platforms somehow simpler.
+This project (HELKalator = [HELK + escalator]) contains a collection of scripts put together with the intent to make importing files into the HELK (and likely ELK) platforms somehow simpler.  
 
-Contribution to this project is welcomed.
+Contribution to this project is welcomed.  
 
-NOTE: Code updates are driven from a local gitlab repository. Until proper integration on both push and pull is worked out, updates to code will be pushed from the local gitlab repository.
+NOTE: Code updates are driven from a local gitlab repository. Until proper integration on both push and pull is worked out, updates to code will be pushed from the local gitlab repository.  
 
 ## Scripts Present
 - **Chop.PY** is a script meant to parse a monolithic Zeek/Bro file into its component files such conn.log and dns.log
