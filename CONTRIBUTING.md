@@ -5,8 +5,8 @@ the following terms and conditions for Your present and future Contributions
 submitted to HELKalator. Contributors agree that all Contributions are subject
 to the following License:
 
-License: NMP (Not My Problem v1.0)
-License URL: http://www.torrycrass.com/nmp-license-v1-0/
+**License:** NMP (Not My Problem v1.0)  
+**License URL:** http://www.torrycrass.com/nmp-license-v1-0/
 
 ## Pull Request Process
 
