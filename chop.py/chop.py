@@ -3,6 +3,13 @@
 # -*- coding: utf-8 -*-
 
 """
+PROGRAM NAME: Chop.PY (CHOPPY)
+PURPOSE: To parse Zeek/Bro monolithic log files into component files
+WHY: Importing Zeek/Bro logs into HELK/ELK systems (in my experience so far) requires
+    data to be very clean. Splitting the data into specific types allows for troubleshooting
+    at individual log type levels vs. trying to identify and resolve problems across a
+    larger data set.
+
 The process for splitting files is as follows:
 
 1. Open JSON file.
@@ -21,7 +28,7 @@ License URL: http://www.torrycrass.com/nmp-license-v1-0/
 
 # Program metadata information
 __author__ = "Torry Crass"
-__copyright__ = "Copyright 2019, chopPY"
+__copyright__ = "Copyright 2019, Chop.PY"
 __credits__ = ["Torry Crass"]
 __license__ = "NMP (http://www.torrycrass.com/nmp-license-v1-0/)"
 __version__ = "23092019.1.0"
@@ -29,15 +36,43 @@ __maintainer__ = "Torry Crass"
 __email__ = "@TorryCrass"
 __status__ = "Prototype"
 
+# PROGRAM START
 
-print("This program takes a json Bro/Zeek file and splits a combined file into different\n"
-      "components based on the \"_path\":\"type\" value. For example:\n"
-      "\"_path\":\"dns\" will be written to dns.json."
-      "\n\n")
+logo = """\
+ _____ _                 ________   __
+/  __ \ |                | ___ \ \ / /
+| /  \/ |__   ___  _ __  | |_/ /\ V /
+| |   | '_ \ / _ \| '_ \ |  __/  \ /
+| \__/\ | | | (_) | |_) || |     | |
+ \____/_| |_|\___/| .__(_)_|     \_/
+                  | |
+                  |_|
+"""
+print logo
+print __version__ + " | " + __email__
+print "_" * 39 + "\n"
+
+print "Chop.PY (choppy) takes your monolithic JSON formatted Zeek/Bro file\n" \
+      "and splits the file into its component log files such as conn.log and\n" \
+      "dns.log for ease of import to analysis systems.\n"
+
+print "REQUIREMENTS:"
+print "- JSON formatted data file\n" \
+      "- Uniform data, no random non JSON lines\n" \
+      "- A correct input filename\n"
+
 
 with open(raw_input("Enter the file to parse: "), "r") as input_file:
-    print("\nSlicing and dicing your file...")
+    # TODO: Capture line count and display progress of writing activity.
+    #  consider possible options to display progress bar like something in the post here:
+    #  https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
+
+    counter = 0
+
+    print "\nSlicing and dicing your file...\n"
+
     for ln in input_file:
+
         # use split to make the values in the string manageable.
         # this requires a split on comma followed by a split on colon
         # followed by stripping off quotes and then concatenating to
@@ -51,4 +86,8 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
         # append lines to existing files
         output_file = open(logfile, 'a')
         output_file.write(ln)
-    print("\nChef work has been completed, you now have chopped ingredients.")
+
+        counter += 1
+        print "\r\tLines processed: [" + str(counter) + "]",
+
+    print "\n\nChef work has been completed, you now have chopped ingredients."
