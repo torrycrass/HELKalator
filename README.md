@@ -13,6 +13,6 @@ Contribution to this project is welcomed.
 - Guidance documentation created on how to import flat files into HELK/ELK instances via logstash, elasticsearch, and filebeat.
 
 ### Links to Additional Tools
-I have used the json-py-es tool below with mixed results.
-[json-py-es](https://github.com/xros/jsonpyes) : Software to import JSON to elasticsearch
+
+*  [json-py-es](https://github.com/xros/jsonpyes) / Software to import JSON to elasticsearch : I have used the json-py-es tool below with mixed results.  
 
