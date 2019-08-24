@@ -1,3 +1,8 @@
+[![](https://img.shields.io/badge/Chop.PY-released-green)](https://github.com/torrycrass/HELKalator/tree/master/chop.py/)
+[![](https://img.shields.io/badge/parsely-released-green)](https://github.com/torrycrass/HELKalator/tree/master/parsely)
+[![](https://img.shields.io/badge/license-NMP-lightgrey)](http://www.torrycrass.com/nmp-license-v1-0/)
+
+
 # HELKalator
 
 This project (HELKalator = [HELK + escalator]) contains a collection of scripts put together with the intent to make importing files into the HELK (and likely ELK) platforms somehow simpler.
