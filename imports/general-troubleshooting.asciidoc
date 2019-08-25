@@ -5,24 +5,71 @@ This document contains a list of errors encountered on imports and their possibl
 
 === Table of Contents
 - Problem Template
-- Error: yaml found character that cannot start any token
-
+- Problem: Error: yaml found character that cannot start any token
+- Problem: ZEEK/BRO logs dumped to syslog cause import errors
+- Problem: JSON Expecting 'EOF', '}', ',', ']', got '{'
 
 ==== Problem Template
-Error should be present in title or if too long paraphrased with the error listed immediately below the title.
+Problem should be present in title or if too long paraphrased with the error listed immediately below the title.
 
 **Last Updated:** DATE
+
+**Problem Details:** The details of the problem.
 
 **Solution:** The solution to the problem.
 
 **Source:** A link to any source material for reference and credit.
 
 
-===== Error: yaml found character that cannot start any token
+===== Problem: Error: yaml found character that cannot start any token
 **Last Updated:** 24 AUG 2019
 
-**Solution:**
-moraes commented on Jun 3, 2013
-Check if you are using tabs for indentation. YAML doesn't allow tabs; it requires spaces.
+**Problem Details:** Import using filebeat errors out with the message that _yaml found character that cannot start any token_. This will prevent filebeat from running and processing any log files.
+
+**Solution:** _moraes commented on Jun 3, 2013_ - Check if you are using tabs for indentation. YAML doesn't allow tabs; it requires spaces.
 
 **Source:**  https://github.com/moraes/config/issues/1
+
+===== Problem: ZEEK/BRO logs dumped to syslog cause import errors
+**Last Updated:** 24 AUG 2019
+
+**Problem Details:** Whenever you have ZEEK/BRO outputting directly to syslog, it will contain extra syslog specific lines of data that will interfere with the ability to properly process import activities to the HELK stack. Not to mention will be a single (or multiple) monolithic file.
+
+**Solution:** This is a challenge so please bear with the explanation. The easiest way to address this is to clean up the monolithic file at the very least. Once that is complete, you may also want to separate the data out. The _parsley_ script is meant to clean the monolithic file while the _Chop.PY_ script is meant to split the monolithic file into component files.
+
+WARNING: I strongly recommend doing any carving (search and replace, updates, etc) on a copy of your original file. Update it progressively with new files as you need to (where possible) one small mistake with a search and replace or line removal could result in the loss of data or a lot of time and effort.
+
+- You will likely need to strip non-JSON entries from the start of the file. Those are any text before the JSON entry starts with `{[`.
+- You may also need to update custom fields, for instance if you are logging certificate information there is a certificate specific _id_ field that is labelled as _id_. This seems to create a conflict and the easiest way that I found to address it is to update the _id_ to another field such as _ca_id_.
+- Make sure to be careful at the text you search and replace, since the parsley script will search the entire line for matches on the string, if the string you are searching for appears anywhere else in the file you'll end up updating that data as well (probably not what you want).
+- Make sure to look for "this message repeats _n_ times" messages in your log. They will only occur occasionally where syslog decides a message repeats. When you see this, your best option is to remove that line. Unfortunately this means that the data and the analytics around it are gone but in a best case scenario you could only pseudo recreate the missing data anyhow with a number of assumptions and best guesses. If you go down this route, you might consider copying the repeating line, creating any new unique identifiers (update/modify, assuming they are not incremental/sequential) and do this for the correct number of repeated entries cited.
+
+**Additional Consideration:** Depending on complexity you may be able to use grep or grep -v (_the inverse_) to find or exclude matches and output the results to another file.
+
+The script below removes the clear syslog generated entries which in this case could definitively be identified by `localhost` followed by a single space.
+
+`grep -v 'localhost ' syslog > bro.log`
+
+The code below was used to strip out the code before the JSON entry in the log files. Again this is because the data was logged into syslog which caused extra data to be put in front of the JSON records.
+
+`awk '{ s = ""; for (i = 6; i <= NF; i++) s = s $i " "; print s }' input.json > output.json`
+
+**Source: ** Trial and error
+
+===== Problem: JSON Expecting 'EOF', '}', ',', ']', got '{'
+**Last Updated:** 25 AUG 2019
+
+**Problem Details:** When attempting to load data you receive messages about improperly formatted JSON or a message like `Expecting 'EOF', '}', ',', ']', got '{'` and the data fails to load.
+
+**Solution:** This may mean several things but the one that caused my trouble so far is that I had the following structure:
+
+`{"a-bunch-of-json-keys":"a-bunch-of-json-values"}
+{"more-json-keys":"more-json-values"}`
+
+Per validation tools JSON expected start and end brackets with commas separating the JSON record sets. I do not know if this is the case for everything since some imports worked without this structure. However, adding opening and closing `[]` as well as commas after records allowed JSON data validation to succeed.
+
+IMPORTANT: This change allowed me to use the Kibana GUI import tool on files that previously failed.
+
+With ZEEK/BRO json files it is likely that the timestamp field you will want is _field4_. In my case, it did not have the correct configuration to find this field by default.
+
+**Source:** http://jsoneditoronline.org/ was used for assistance with validation efforts
