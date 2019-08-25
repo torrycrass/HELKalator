@@ -1,0 +1,17 @@
+[root@59ee84b677e7 data_import]# curl -v -H "content-type: application/json" http://172.18.0.3:9200 -d @'bro.json'
+* About to connect() to 172.18.0.3 port 9200 (#0)
+*   Trying 172.18.0.3...
+* Connected to 172.18.0.3 (172.18.0.3) port 9200 (#0)
+> POST / HTTP/1.1
+> User-Agent: curl/7.29.0
+> Host: 172.18.0.3:9200
+> Accept: */*
+> content-type: application/json
+> Content-Length: 5085323878
+> Expect: 100-continue
+>
+< HTTP/1.1 413 Request Entity Too Large
+< content-length: 0
+* HTTP error before end of send, stop sending
+<
+* Closing connection 0

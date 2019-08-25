@@ -73,3 +73,41 @@ IMPORTANT: This change allowed me to use the Kibana GUI import tool on files tha
 With ZEEK/BRO json files it is likely that the timestamp field you will want is _field4_. In my case, it did not have the correct configuration to find this field by default.
 
 **Source:** http://jsoneditoronline.org/ was used for assistance with validation efforts
+
+===== Problem: JSON is not an NDJSON formatted file
+**Last Updated:** 25 AUG 2019
+
+**Problem Details:** When attempting to load data via GUI (or other area) you get a message about your JSON file not being properly formatted, that it was expecting an NDJSON file or it simply will not work because of formatting of the data.
+
+**Solution:** This is rough, the biggest thing you'll want to look at is the structure of the data that you need to import and make sure that it matches the format __**EXACTLY**__ and I do mean that. Even a single misplaced bracket, comma, new line, etc. can absolutely break your data import and you'll wind up with either an error or a half-imported data set and an error.
+
+SO, that said, NDJSON is the format they're looking for. The best way that I've found to approach this is as follows.
+
+1. Your file MUST start with a `[` character on a single line and end with ah `]` on a single line (this is because you're going to run a conversion on it).
+2. Next, you'll need EACH record line to end with a comma (`,`) so your line data should have a format like `{"myfield":"mydata","myotherfield":"myotherdata"},` __**EXCEPT**__ for the very last line which should __**NOT**__ have a comma.
+3. Now, because indents are important you need __**EVERY**__ record line to have an indent so your data structure will look something like below (but with more data of course)
+
+```
+[
+  {"record":1,"field1":"boring","field2":"stuff"},
+  {"record":2,"field1":"or is","field2":"it"},
+  {"record":3,"field1":"interesting","field2":"stuff"}
+]
+```
+
+4. Now you'll run a quick conversion script like below on the entire file.
+
+TIP: You may have to install jq first, on Ubuntu/Debian `apt install jq` will do the trick.
+
+`cat yourjsonfile.json | jq -c '.[]' > yourndjsonfile.json`
+
+And that should get your data formatted the right way for import.
+
+TIP: You may want to consider modifying the file in reverse. 1) add commas to the end of each line 2) add tabs (or spaces) to the front of each line 3) remove the last comma 4) add the [] brackets to the top and bottom of the file.
+
+TIP: You can use `sed` to add tabs to the start of any file such as with the example below.
+
+`sed -i 's/^/\t/' <filename>`
+
+**Source:**
+https://medium.com/datadriveninvestor/json-parsing-error-how-to-load-json-into-bigquery-successfully-using-ndjson-2b7d94616bcb - was used to identify the JSON to NDJSON function. This lead to additional formatting discoveries with the source record file.
