@@ -1,0 +1,119 @@
+= General Troubleshooting
+
+== Overview
+
+This document contains a list of errors encountered on imports and their possible solutions. These may be sourced/copied from other areas on the internet in attempt to aggregate them here as they pertain to the effort of importing data into a HELK or ELK stack.
+
+IMPORTANT: While this is being written to provide a way to instruct on what I've found so far on ingesting flat file logs into Elasticsearch a better approach may be to use `filebeats` with `logstash` since it has more native parsing of ZEEK/BRO sensor data.
+
+=== Table of Contents
+
+* Introduction & Caveats
+* Data File Format (JSON)
+* Field Formatting
+* Import Process
+  - json-py-es to Elasticsearch
+  - elasticsearch_loader
+
+==== Introduction
+
+Elastisearch is one of the core components in the ELK stack and by extension, also the HELK stack.
+
+IMPORTANT: This document is written from the perspective of working to ingest a ZEEK/BRO log that was initially sent to syslog on a Linux system. If your setup is different there may still be value in some of this but make sure to sanity check what you are about to do in case your setup is different and you have to make adjustments to account for that.
+
+**Assumptions:**
+
+- You are starting with syslog data
+- The ZEEK/BRO data that you need is in JSON format
+- You will use the refined JSON formatted data to import to HELK/ELK
+
+==== Data File Format (JSON)
+
+The first and most important thing about this entire process is ensuring that your data is in the proper format. This has been the single largest challenge of this entire import process and responsible for essentially every significant error that has come up and significant amounts of troubleshooting time spent resolving.
+
+Based on the assumptions above your JSON data at an extremely basic level will look something like this at each line:
+
+`{"record":1,"fieldname":"field1","field2":"data"}`
+
+Now here is a more real-life example:
+
+```
+{"_path":"conn","_system_name":"sensor","_write_ts":"2019-07-02T15:53:11.012579Z","ts":"2019-07-02T15:52:40.303594Z","uid":"CXwfbc43Jk2aqvv2AbVg","id.orig_h":"12.34.56.78","id.orig_p":54431,"id.resp_h":"78.56.23.12","id.resp_p":443,"proto":"tcp","duration":0.019613,"orig_bytes":1,"resp_bytes":0,"conn_state":"OTH","local_orig":true,"local_resp":false,"missed_bytes":0,"history":"Aa","orig_pkts":1,"orig_ip_bytes":52,"resp_pkts":1,"resp_ip_bytes":52,"tunnel_parents":[],"resp_cc":"US","orig_l2_addr":"00:11:22:33:44:55","resp_l2_addr":"aa:bb:cc:dd:ee:ff","id.resp_h.name.src":"DNS_PTR","id.resp_h.name.vals":["subdomain.l.google.com","subdomain.1e100.net"]}
+```
+
+These records will vary based on the type of log that they are coming from. ZEEK/BRO has a number of different log types that it will generate if sent to individual logs which are all combined into syslog if logging takes place there (_which is it's own problem_)
+
+Elasticsearch primarily takes NDJSON records which is the style of record I've listed above. The difference is that a JSON record has extra parts vs. just the record itself.
+
+If you have a properly formatted JSON file the brackets and spacing/tabs on records will be different and the framework will look something like what is below:
+
+```
+[
+  {JSON RECORD HERE},
+  {JSON RECORD HERE},
+  {JSON RECORD HERE}
+]
+```
+
+CAUTION: Make sure to note that the `[]` are only at the first and last line of a standard JSON file and that all but the very last line ends with a comman `,` after the `{}` for the records.
+
+TIP: You do NOT need to remove the carriage returns after each record. Some other systems require this action or don't mind it, but removing line breaks here will likely cause your import to fail.
+
+
+==== Field Formatting
+
+While the overall file structure is extremely important the records within the data set are almost as equally important.
+
+Certain ZEEK/BRO log files will likely import with almost no issue such as the `wierd.log` or `ssh.log` files others, such as the all-important `conn.log` might give you significant grief.
+
+In particular the most important part of the field formatting that I've encountered is how elasticsearch handles object vs. text type.
+
+TIP: A **HUGE** thank you to @xeraa in the Elasticsearch community for assisting with my learning and better understanding of this. In a few messages back and forth I came to understand this much better.
+
+In raw ZEEK logs you will find certain field names `id.resp_h` (_for example_) contains IP address information but further into certain records you will also find an extended field, or as it is referred to, an object, such as `id.resp_h.name.src` (_for example_) which will have its own values.
+
+The problem is that you cannot assign a value to a field if that field has objects within it. Periods are used to designate this. For example:
+
+```
+[
+  {"id"
+    "resp_h" = "11.22.33.44"
+      "name"
+        "src" = "DNS_A"}
+]
+```
+
+The example above shows a JSON entry where the `resp_h` object has a `text` value of `11.22.33.44` but then it has two more embedded objects `name` followed by `src` underneath it with `src` being assigned a `text` value of "DNS_A".
+
+**THIS IS NOT POSSIBLE** and will fail to import because `resp_h` cannot be assigned both a `text` value and an object `name` value at the same time, it has to be one or the other, not both.
+
+As a result, the best solution I have come up with so far is to rename the field names within the JSON where this breaks the import process.
+
+So, for example `id.resp_h.name.src` becomes `id.resp_h_name_src` where I have replaced the extra `.`, periods, with `_`, underscores which resolves the conflict because then the JSON looks like this:
+
+```
+[
+  {"id"
+    "resp_h" = "11.22.33.44",
+  "id"
+    "resp_h_name_src" = "DNS_A",
+  "id"
+    "resp_h_name_vals" = "some.host.com, another.host.com"}
+]
+```
+
+This will fix the ability to import data on otherwise problematic field names. You will likely need to update multiple embedded objects under different fields for this. I know that at a minimum, `id.resp_h` and `id.orig_h` will need updates.
+
+==== Import Process
+
+Once you have the data formatted properly, you may be ready to do an import. I would suggest (_at least for a test_) using the Kibana GUI tool (_currently in beta_) to try to import a test or partial record set.
+
+CAUTION: When you begin your import process, take careful note of the `timestamp` field mapping being assigned by default. In the case of ZEEK/BRO logs the automated tool sets, including Kibana will likely default to choosing the `_write_ts` field which is the timestamp for the actual record being written which is likely different than the actual event timestamp. The Kibana write up explains how to change this for the GUI import. CLI import is not yet covered for this change.
+
+===== json-py-es to Elasticsearch
+
+**TO BE WRITTEN**
+
+===== elasticsearch_loader
+
+**TO BE WRITTEN**

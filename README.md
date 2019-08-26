@@ -11,7 +11,7 @@ Beyond all else data to be ingested must be formatted properly. If this is not t
 
 Contribution to this project is welcomed.  
 
-NOTE: Code updates are driven from a local gitlab repository. Until proper integration on both push and pull is worked out, updates to code will be pushed from the local gitlab repository.  
+**NOTE:** Code updates are driven from a local gitlab repository. Until proper integration on both push and pull is worked out, updates to code will be pushed from the local gitlab repository.  
 
 ## Scripts Present
 - **Chop.PY** is a script meant to parse a monolithic Zeek/Bro file into its component files such conn.log and dns.log
@@ -20,7 +20,7 @@ NOTE: Code updates are driven from a local gitlab repository. Until proper integ
 ## HowTo Documents
 - **General Troubleshooting** has been started
 - **HowTo: Kibana GUI Import** draft has been completed
-- **HowTo: Elasticsearch Import** is not started
+- **HowTo: Elasticsearch Import** has been started
 - **HowTo: Logstash Import** is not started
 - **HowTo: CURL Import** is not started
 
@@ -30,6 +30,10 @@ NOTE: Code updates are driven from a local gitlab repository. Until proper integ
 * [ ]  Integrate wiki from gitlab to github
 * [ ]  Integrate a pull from github to gitlab to allow for github native updates vs. having to recreate in gitlab
 * [ ]  Add README.md to imports, Chop.PY, and parsely directories
+* [ ]  Add instructions to elasticsearch import for import tools
+* [ ]  Add scripts for JSON to NDJSON conversion
+* [ ]  Add field update find and replace lists as usable example/sample data
+* [ ]  Link Kibana GUI Import document into Elasticsearch Import document
 
 ### Links to Additional Tools
 

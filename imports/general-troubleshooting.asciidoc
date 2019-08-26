@@ -8,6 +8,7 @@ This document contains a list of errors encountered on imports and their possibl
 - Problem: Error: yaml found character that cannot start any token
 - Problem: ZEEK/BRO logs dumped to syslog cause import errors
 - Problem: JSON Expecting 'EOF', '}', ',', ']', got '{'
+- Problem: JSON is not an NDJSON formatted file
 
 ==== Problem Template
 Problem should be present in title or if too long paraphrased with the error listed immediately below the title.
