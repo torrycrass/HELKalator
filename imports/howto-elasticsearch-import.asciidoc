@@ -9,13 +9,14 @@ IMPORTANT: While this is being written to provide a way to instruct on what I've
 === Table of Contents
 
 * Introduction & Caveats
+* Open Docker Ports
 * Data File Format (JSON)
 * Field Formatting
 * Import Process
   - json-py-es to Elasticsearch
   - elasticsearch_loader
 
-==== Introduction
+==== Introduction & Caveats
 
 Elastisearch is one of the core components in the ELK stack and by extension, also the HELK stack.
 
@@ -26,6 +27,18 @@ IMPORTANT: This document is written from the perspective of working to ingest a 
 - You are starting with syslog data
 - The ZEEK/BRO data that you need is in JSON format
 - You will use the refined JSON formatted data to import to HELK/ELK
+
+==== Open Docker Ports
+
+In order to import information into the HELK solution you'll either need to transfer files into individual docker containers (_milage will vary greatly_) or you'll need to ensure that the proper ports are opened to load data.
+
+For this, we'll open port 9200 on the elasticsearch docker container.
+
+To do this you'll need to find the IP address of the subject container by:
+
+1. list docker containers by `docker container list` and identify the `id`.
+1. find the IP by issuing another docker command `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>`.
+1. Now that you have the container IP you can update iptables `iptables -A DOCKER -p tcp -m tcp --dport 9200 -s 0.0.0.0/0 -d <container address> -j ACCEPT`.
 
 ==== Data File Format (JSON)
 
