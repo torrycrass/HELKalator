@@ -1,1 +1,9 @@
 Initial repository creation
+
+13 OCT 2019
+Chop.PY Updates:
+Added exception handler to main processor to continue on parse error
+Identified bug with syslog input adding CR at character 8045.
+Updated to search data file for lines above 8045 and combine with next line.
+Output error.log on findings and a new sanitized.json file.
+Updated file split type to be json instead of log

@@ -61,17 +61,57 @@ print "- JSON formatted data file\n" \
       "- Uniform data, no random non JSON lines\n" \
       "- A correct input filename\n"
 
+is_syslog  = raw_input("Is this file a syslog file that NSM logs have been output to? (Y/N): ")
 
 with open(raw_input("Enter the file to parse: "), "r") as input_file:
     # TODO: Capture line count and display progress of writing activity.
     #  consider possible options to display progress bar like something in the post here:
     #  https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
 
+    # TODO: Check space to be used and space available.
+    #  report this data to the user and ask for conformation to continue.
+
+    # TODO: Combine syslog based cleanup into the chop.py program.
+    #  1. Strip the localhost entries
+    #  2. Strip the "message repeated" entries
+    #  3. Output to a new, cleaned file, re-use that file to "split" the logs.
+
+    linenumber = 0
+
+    # 1. If we're combining without removing the line entry. Process the combination first,
+    # it is assumed that the file will always contain top-to-bottom entries.
+    # 2. If line does not start with {" skip the line.
+
+    for line in input_file:
+        cleaned_file = open("sanitized.json.", 'a')
+        error_file = open("error.log", 'a')
+
+        # if the line is greater than 8045 combine line with next line.
+        if len(line) >= 8045:
+            error_file.write("Line: " + str(linenumber) + " Length: " + str(len(line)))
+            combinedline = line.replace('\n', '').replace('\r', '') + next(input_file)
+
+            print combinedline
+            cleaned_file.write(combinedline)
+
+        # if line starts with valid JSON write the line.
+        elif line.lstrip().startswith("{\""):
+            cleaned_file.write(line)
+
+        # error catch any remaining lines to the error.log.
+        else:
+            error_file.write(line)
+
+        linenumber += 1
+
     counter = 0
+
+    # process newly created json file.
+    clean_file = open("sanitized.json", 'r')
 
     print "\nSlicing and dicing your file...\n"
 
-    for ln in input_file:
+    for ln in clean_file:
 
         # use split to make the values in the string manageable.
         # this requires a split on comma followed by a split on colon
@@ -79,8 +119,17 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
         # make the log file name
         first_split = ln.split(',')
         second_split = first_split[0].split(':')
-        file_name = second_split[1].strip("\"")
-        logfile = file_name + ".log"
+
+        # handle exception if lines do not contain proper formatting and continue.
+        try:
+            file_name = second_split[1].strip("\"")
+        except Exception, e:
+            err = open('error.log', 'a')
+            err.write('Exception: %s' %e + ' line: ' + str(counter) + '\n')
+            err.close()
+            continue
+
+        logfile = file_name + ".json"
 
         # create the file if it doesn't exist (append does this by default)
         # append lines to existing files

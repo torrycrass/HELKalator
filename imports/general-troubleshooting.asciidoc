@@ -9,6 +9,7 @@ This document contains a list of errors encountered on imports and their possibl
 - Problem: ZEEK/BRO logs dumped to syslog cause import errors
 - Problem: JSON Expecting 'EOF', '}', ',', ']', got '{'
 - Problem: JSON is not an NDJSON formatted file
+- Problem: message repeated n times: 
 
 ==== Problem Template
 Problem should be present in title or if too long paraphrased with the error listed immediately below the title.
@@ -112,3 +113,14 @@ TIP: You can use `sed` to add tabs to the start of any file such as with the exa
 
 **Source:**
 https://medium.com/datadriveninvestor/json-parsing-error-how-to-load-json-into-bigquery-successfully-using-ndjson-2b7d94616bcb - was used to identify the JSON to NDJSON function. This lead to additional formatting discoveries with the source record file.
+
+==== Problem: message repeated n times:
+**Last Updated:** 11 OCT 2019
+
+**Problem Details:** If corelight, zeek, or bro logs are stored in syslog they will likely contain messages generated from syslog that a message was repeated a certain number of times. This means all correct JSON entries are riddled with garbage entries. Once syslog strips messages out as duplicative there is no way to put them back. The best option at this point is to sacrifice those entries to allow the remaining entries to be used. This is a limitation of sending corelight, zeek, and bro to syslog.
+
+**Solution:** Filter the logs using grep to strip unparsable messages.
+
+`grep -v 'message repeated ' syslog > bro.log`
+
+**Source:** Trial and error
