@@ -1,9 +1,18 @@
 Initial repository creation
 
-13 OCT 2019
-Chop.PY Updates:
-Added exception handler to main processor to continue on parse error
-Identified bug with syslog input adding CR at character 8045.
-Updated to search data file for lines above 8045 and combine with next line.
-Output error.log on findings and a new sanitized.json file.
-Updated file split type to be json instead of log
+13 OCT 2019 21:15
+Chop.PY:
+Bug: Identified bug with syslog input adding CR at character 8045.
+Added: exception handler to main processor to continue on parse error
+Fixed: Search data file for lines above 8045 and combine with next line.
+Added: Output error.log on findings and a new sanitized.json file.
+Fixed: Updated file split type to be json instead of log
+
+general-troubleshooting:
+Added: information about "message repeated" parsing
+
+13 OCT 2019 21:45
+Chop.PY:
+Fixed: extra period after sanitized.json
+Fixed: removed screen output of long lines
+Added: counter for sanatized processing

@@ -76,6 +76,11 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
     #  2. Strip the "message repeated" entries
     #  3. Output to a new, cleaned file, re-use that file to "split" the logs.
 
+    # TODO: Migration different activities into functions.
+    #  Originally it was not necessary to contain the functions of this script
+    #  in functions but since the script has expanded to include additional operations
+    #  it is now beneficial to migrate code into functions.
+
     linenumber = 0
 
     # 1. If we're combining without removing the line entry. Process the combination first,
@@ -83,15 +88,13 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
     # 2. If line does not start with {" skip the line.
 
     for line in input_file:
-        cleaned_file = open("sanitized.json.", 'a')
+        cleaned_file = open("sanitized.json", 'a')
         error_file = open("error.log", 'a')
 
         # if the line is greater than 8045 combine line with next line.
         if len(line) >= 8045:
             error_file.write("Line: " + str(linenumber) + " Length: " + str(len(line)))
             combinedline = line.replace('\n', '').replace('\r', '') + next(input_file)
-
-            print combinedline
             cleaned_file.write(combinedline)
 
         # if line starts with valid JSON write the line.
@@ -102,6 +105,7 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
         else:
             error_file.write(line)
 
+        print "\r\tLines sanitized: [" + str(linenumber) + "]",
         linenumber += 1
 
     counter = 0
