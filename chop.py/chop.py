@@ -31,7 +31,7 @@ __author__ = "Torry Crass"
 __copyright__ = "Copyright 2019, Chop.PY"
 __credits__ = ["Torry Crass"]
 __license__ = "NMP (http://www.torrycrass.com/nmp-license-v1-0/)"
-__version__ = "23092019.1.0"
+__version__ = "15102019.1.0"
 __maintainer__ = "Torry Crass"
 __email__ = "@TorryCrass"
 __status__ = "Prototype"
@@ -93,7 +93,7 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
 
         # if the line is greater than 8045 combine line with next line.
         if len(line) >= 8045:
-            error_file.write("Line: " + str(linenumber) + " Length: " + str(len(line)))
+            error_file.write("Line: " + str(linenumber) + " Length: " + str(len(line)) + "\n")
             combinedline = line.replace('\n', '').replace('\r', '') + next(input_file)
             cleaned_file.write(combinedline)
 

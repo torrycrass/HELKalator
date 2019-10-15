@@ -1,18 +1,30 @@
 Initial repository creation
 
-13 OCT 2019 21:15
+13 OCT 2019 2115
 Chop.PY:
-Bug: Identified bug with syslog input adding CR at character 8045.
+Bug: Identified bug with syslog input adding CR at character 8045
 Added: exception handler to main processor to continue on parse error
-Fixed: Search data file for lines above 8045 and combine with next line.
-Added: Output error.log on findings and a new sanitized.json file.
+Fixed: Search data file for lines above 8045 and combine with next line
+Added: Output error.log on findings and a new sanitized.json file
 Fixed: Updated file split type to be json instead of log
 
 general-troubleshooting:
 Added: information about "message repeated" parsing
 
-13 OCT 2019 21:45
+13 OCT 2019 2145
 Chop.PY:
 Fixed: extra period after sanitized.json
 Fixed: removed screen output of long lines
-Added: counter for sanatized processing
+Added: counter for sanitized processing
+
+13 OCT 2019 2300
+Chop.PY
+Fixed: added linebreaks to error output
+
+15 OCT 2019 1313
+parsley.py:
+Added: counter to indicate process of file being parsed
+Added: description of program function and basic requirements
+
+Chop.PY
+Fixed: error log file formatting by adding a line break

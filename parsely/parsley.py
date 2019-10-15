@@ -33,7 +33,7 @@ __author__ = "Torry Crass"
 __copyright__ = "Copyright 2019, parsley"
 __credits__ = ["Torry Crass"]
 __license__ = "NMP (http://www.torrycrass.com/nmp-license-v1-0/)"
-__version__ = "23092019.1.0"
+__version__ = "15102019.1.0"
 __maintainer__ = "Torry Crass"
 __email__ = "@TorryCrass"
 __status__ = "Prototype"
@@ -55,6 +55,19 @@ logo = """\
 print logo
 print __version__ + " | " + __email__
 print "_" * 58 + "\n"
+
+print "parsley.py accepts an array of search terms from field_find.txt and replaces\n" \
+    "finds with values from the corresponding array position in field_update.txt.\n"
+
+print "REQUIREMENTS:"
+print "- Search and replacement terms specified in corresponding .txt files\n" \
+    "- Works best with uniform data sets\n" \
+    "- For data safety an input and an output file so source data is not corrupted\n"
+
+# TODO: Update program to allow overwrite of same file.
+#  it may be desired to update the existing file instead of creating a new one;
+#  the implication of this is if search and replace data is incorrect the resultant file
+#  will be unusable so a warning to the user must be included.
 
 
 def filecheck(filename):
@@ -93,7 +106,9 @@ output_file = open(output_file, 'w')
 find_word = [line.rstrip('\n') for line in open("field_find.txt", 'r')]
 replace_word = [line.rstrip('\n') for line in open("field_update.txt", 'r')]
 
-print("Data and word list files opened, processing data...")
+counter = 0
+
+print("Data and word list files opened, processing data...\n")
 
 for line in input_file:
     newline = line
@@ -101,7 +116,10 @@ for line in input_file:
         newline = newline.replace(find_word[i], replace_word[i])
     output_file.write(newline)
 
+counter += 1
+print "\r\tLines processed: [" + str(counter) + "]",
+
 input_file.close()
 output_file.close()
 
-print("File processing complete, if you didn't get an exception, something happened.")
+print("\n\nFile processing complete, if you didn't get an exception, something happened.")
