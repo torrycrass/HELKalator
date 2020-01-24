@@ -10,6 +10,7 @@ This document contains a list of errors encountered on imports and their possibl
 - Problem: JSON Expecting 'EOF', '}', ',', ']', got '{'
 - Problem: JSON is not an NDJSON formatted file
 - Problem: message repeated n times: 
+- Problem: need the location of config files for HELK
 
 ==== Problem Template
 Problem should be present in title or if too long paraphrased with the error listed immediately below the title.
@@ -124,3 +125,13 @@ https://medium.com/datadriveninvestor/json-parsing-error-how-to-load-json-into-b
 `grep -v 'message repeated ' syslog > bro.log`
 
 **Source:** Trial and error
+
+==== Problem: need the location of config files for HELK
+
+**Last Updated:** 24 JAN 2020
+
+**Problem Details:** In order to update or modify configuration files without modifying the docker container it is necessary to update config files at the HOST level.
+
+**Solution:** In order to update config files based on the host you must find the location of the docker config files on the underlying HELK server OS, not within the docker ecosystem. The path for these configuration files will be the location that you originally downloaded the HELK setup files to. This is often '/opt' or '/srv' and 'HELK'. Files that are contained in these docker container folders _overlay_ the configuration files inside the docker when it is started. If configs don't exsist in this directory structure, the docker will use the ones already inside the container.
+
+**Source:** Finding it all over again after hours of looking...
