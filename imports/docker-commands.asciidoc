@@ -1,0 +1,10 @@
+The following are basic commands for docker container management that need to be used regularly [for quick reference for non-docker experts. ;-)]
+
+List running docker containers:
+'docker container list'
+
+Get very detailed information on a docker container:
+'docker inspect <containerIdOrName>'
+
+Obtain a 'bash' command prompt on the docker container:
+'docker exec -it <containerIdOrName> bash'
