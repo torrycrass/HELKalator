@@ -61,7 +61,9 @@ print "- JSON formatted data file\n" \
       "- Uniform data, no random non JSON lines\n" \
       "- A correct input filename\n"
 
-is_syslog  = raw_input("Is this file a syslog file that NSM logs have been output to? (Y/N): ")
+is_syslog = raw_input("Is this file a syslog file that NSM logs have been output to? (Y/N): ")
+
+extension = raw_input("Enter the file extension for output files (ex. json, log"): ")
 
 with open(raw_input("Enter the file to parse: "), "r") as input_file:
     # TODO: Capture line count and display progress of writing activity.
@@ -80,6 +82,17 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
     #  Originally it was not necessary to contain the functions of this script
     #  in functions but since the script has expanded to include additional operations
     #  it is now beneficial to migrate code into functions.
+
+# Remove Syslog Lines: grep -v 'localhost ' syslog > bro.log
+# Remove extra, non-json data:
+    # awk '{ s = ""; for (i = 6; i <= NF; i++) s = s $i " "; print s }' input.json > output.json
+# Remove 'message repeated' strings: grep -v 'message repeated ' syslog > bro.log
+
+#if is_syslog True:
+    # We will now manipulate the input data file to remove the extra syslog information
+    # from the file leaving sanitized json entries
+    # Syslog also adds a linebreak at 8045 characters that breaks json entries
+    # remove it as well
 
     linenumber = 0
 
@@ -133,7 +146,7 @@ with open(raw_input("Enter the file to parse: "), "r") as input_file:
             err.close()
             continue
 
-        logfile = file_name + ".json"
+        logfile = file_name + extension.lower()
 
         # create the file if it doesn't exist (append does this by default)
         # append lines to existing files

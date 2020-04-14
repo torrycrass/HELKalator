@@ -1,0 +1,73 @@
+# Rough Notes
+
+TOOD: Clean up this page.
+IMPORTANT: IP's listed are examples, these vary (_and change_) on boot of the HELK system.
+
+Download filebeat
+
+Install filebeat
+
+Open docker ports for Kibana and Elasticsearch
+ - Find IPs
+ - IPtables rules
+
+docker container list
+
+
+ root@helk:~# docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 8ce00d249932
+ 172.18.0.3
+ root@helk:~# docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 8c37f1e357e3
+ 172.18.0.2
+ root@helk:~# docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 4af63079294d
+ 172.18.0.5
+
+
+ root@helk:~# iptables -A DOCKER -p tcp -m tcp --dport 5601 -s 0.0.0.0/0 -d 172.18.0.3 -j ACCEPT
+ root@helk:~# iptables -A DOCKER -p tcp -m tcp --dport 9200 -s 0.0.0.0/0 -d 172.18.0.2 -j ACCEPT
+ root@helk:~# iptables -A DOCKER -p tcp -m tcp --dport 5044 -s 0.0.0.0/0 -d 172.18.0.5 -j ACCEPT
+
+Enable appropriate module
+filebeat module enable <module name>
+
+Configure filebeat
+/etc/filebeat/filebeat.yml
+
+paths to log repository
+set kibana location .3
+set elasticsearch location .2
+ignore logstash unless you have a reason to turn it on
+
+
+Configure modules
+varies by what you want to do
+
+/etc/filebeat/modules.d/zeek.yml
+```
+# Module: zeek
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.2/filebeat-module-zeek.html
+​
+- module: zeek
+  # All logs
+  connection:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/conn.log" ]
+  dns:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/dns.log" ]
+  http:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/http.log" ]
+  files:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/files.log" ]
+  ssl:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/ssl.log" ]
+  notice:
+    enabled: true
+    var.paths: [ "/opt/log_import/zeek/notice.log" ]
+​
+    # Set custom paths for the log files. If left empty,
+    # Filebeat will choose the paths depending on your OS.
+    #var.paths:
+```

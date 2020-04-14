@@ -1,0 +1,31 @@
+# Overview
+IMPORTANT: This document is extremely preliminary
+TODO: Rework and refine this information
+
+This document contains information on how to get kafka working within the HELK eco system.
+
+### Listing kafka topics
+1. You'll need to enter the cli of the docker container.
+
+  - list your containers `docker container list`
+  - enter cli `docker exec -ti <containerIDorName> /bin/bash`
+
+2. Next you'll need to navigate to the `bin` directory
+- you'll first be in ``/opt/helk/kafka/scripts`
+- so `cd ../bin/` to get to the binary directory
+- now you can run `kafka-topics --zookeeper SERVERNAMEorIP:2181 --list`
+- This will result in output similar to that below:
+
+  `kafkauser@f80c9d2148a5:~/bin$ ./kafka-topics.sh --zookeeper 172.18.0.5:2181 --list
+SYSMON_JOIN
+__consumer_offsets
+_confluent-ksql-wardog_command_topic
+filebeat
+winevent
+winlogbeat`
+
+kafkauser@f80c9d2148a5:~$ grep -nr "KAFKA_CREATE_TOPICS" *
+scripts/kafka-create-topics.sh:18:IFS=', ' read -r -a temas <<< "$KAFKA_CREATE_TOPICS"
+scripts/kafka-entrypoint.sh:61:if [[ -z "$KAFKA_CREATE_TOPICS" ]]; then
+scripts/kafka-entrypoint.sh:62:  KAFKA_CREATE_TOPICS=winlogbeat
+scripts/kafka-entrypoint.sh:64:echo "[HELK-DOCKER-INSTALLATION-INFO] Creating the following kafka topics: $KAFKA_CREATE_TOPICS"

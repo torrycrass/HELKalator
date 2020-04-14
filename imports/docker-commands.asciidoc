@@ -8,3 +8,5 @@ Get very detailed information on a docker container:
 
 Obtain a 'bash' command prompt on the docker container:
 'docker exec -it <containerIdOrName> bash'
+
+https://ligerlearn.com/how-to-edit-files-within-docker-containers/
