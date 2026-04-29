@@ -5,6 +5,8 @@
 
 # HELKalator
 
+# THIS PROJECT IS NOW ARCHIVED, HELK IS NO LONGER AN ACTIVE PROJECT (5 years and counting) SO THIS CODE AND ITEMS ARE NO LONGER RELEVANT. IT IS BEING LEFT HERE JUST IN CASE THE REFERENCE MATERIAL CAN BE HELPFUL.
+
 This project (HELKalator = [HELK + escalator]) contains a collection of scripts put together with the intent to make importing files into the HELK (and likely ELK) platforms somehow simpler.
 
 Beyond all else data to be ingested must be formatted properly. If this is not the case, errors and problems of all shapes and sizes will pop up.
